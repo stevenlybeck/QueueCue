@@ -1,6 +1,6 @@
 (function() {
 
-var _backupQC = typeof QC === 'undefined' ? null : QC;
+var _backupQC = typeof QC === 'undefined' ? undefined : QC;
 window.QC = {};
 
 QC.parallel = function() {
