@@ -1,0 +1,61 @@
+QueueCue - Sep. 14, 2011
+Copyright (c) 2011 Steven Lybeck
+
+You may use this project under the terms of the MIT License.
+
+
+This project is a collection of two simple JavaScript objects which define a clear and powerful pattern for specifying the execution of a series of JavaScript functions. Functions can either be executed in sequence (through the use of QC.serial) or at the same time (through the use of QC.parallel).
+
+Functions called by QueueCue must follow one rule - whenever they consider themselves to be "done", they must call the callback that was provided as the final argument in the function's argument list. (i.e., arguments[arguments.length-1]();)
+
+The 'run' method of QueueCue objects abides by this one rule, meaning QueueCue objects can also be combined together. This allows you to build complex execution patterns with clear code.
+
+
+So, some examples:
+
+// load three scripts simultaneously, and execute a function for each that is dependent on its respective script
+// do this as quickly as possible, then 
+
+var allScripts = new QC.parallel();
+
+var script1 = new QC.serial();
+script1.push(loadScript, ['script1.js']);
+script1.push(function() { alertHiFromScript1(); arguments[arguments.length-1](); });
+
+var script2 = new QC.serial();
+script2.push(loadScript, ['script2.js']);
+script2.push(function() { alertHiFromScript2(); arguments[arguments.length-1](); });
+
+var script3 = new QC.serial();
+script3.push(loadScript, ['script3.js']);
+script3.push(function() { alertHiFromScript3(); arguments[arguments.length-1](); });
+
+
+allScripts
+.push(script1.run)
+.push(script2.run)
+.push(script3.run);
+
+allScripts.run();
+
+
+function loadScript() {
+  var _cb = arguments[arguments.length-1];
+  
+  // script loading code goes here
+  // attach events to script loading process - when done, call _cb();
+  // voila - when the script is done loading, it returns control to its QueueCue and allows execution to continue on that channel
+}
+
+
+
+
+
+The MIT License (MIT)
+Copyright (c) 2011 Setven Lybeck
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
